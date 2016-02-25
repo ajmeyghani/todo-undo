@@ -5,35 +5,32 @@ const Actions = Todo.Actions
 const Task = Todo.Item
 const App = require('../src/app')
 
-test('The do method should call the existing method', (t) => {
+test('The do method', (t) => {
   const app = App({tasks: Tasks(), actions: Actions()});
   const action = app.do('add', {name: 'some task', id: '1'})
   const actual = action
   const expected = {name: 'add', data: {name: 'some task', id: '1'}}
-  t.deepEqual(actual, expected, 'the do method should proxy the call')
+  t.deepEqual(actual, expected, 'should call the existing method and return the action')
   t.end()
 })
 
-test('Add two tasks and remove one and verify the items', (t) => {
+test('After adding two items and removing one ', (t) => {
 
   const app = App({tasks: Tasks(), actions: Actions()});
   app.do('add', Task({name: 't1'}))
   app.do('add', Task({name: 't2'}))
   const actual1 = app.tasks.getAll()
   const expected1 = [{name: 't1', id: '1'}, {name: 't2', id: '2'}]
-  t.deepEqual(actual1, expected1, 'tasks list equality')
+  t.deepEqual(actual1, expected1, '...')
   app.do('remove', Task({name: 't1', id: '1'}))
   const actual2 = app.tasks.getAll()
   const expected2 = [{name: 't2', id: '2'}]
-  t.deepEqual(actual2, expected2, 'tasks list equality after remove')
+  t.deepEqual(actual2, expected2, 'should have 1 item in the app')
   t.end()
 })
 
 
-test('After every do operation, we are going to add a add action to the list of actions held by the app', (t) => {
-  /**
-   * app.do('whatever'): need to create an action object and then push to the actions object
-   */
+test('After every operation done by app', (t) => {
   const app = App({tasks: Tasks(), actions: Actions()});
   app.do('add', Task({name: 't1'}))
   app.do('add', Task({name: 't2'}))
@@ -41,14 +38,14 @@ test('After every do operation, we are going to add a add action to the list of 
    // Now we have two actions in the actions list
   const actual = app.actions.getCount()
   const expected = 2
-  t.equal(actual, expected)
+  t.equal(actual, expected, 'should have correct number of actions in the actions list')
   // verify the data
   const actual2 = app.actions.getAll()
   const expected2 = [
     {name: 'add', id: '1', data: {name: 't1', id: '1'}},
     {name: 'add', id: '2', data: {name: 't2', id: '2'}}
   ]
-  t.deepEqual(actual2, expected2)
+  t.deepEqual(actual2, expected2, 'should have correct number of actions in the actions list')
   // then remove data (push removeAction to the stack)
   app.do('remove', Task({name: 't2', id: '2'}))
   const actual3 = app.actions.getAll()
@@ -57,12 +54,12 @@ test('After every do operation, we are going to add a add action to the list of 
     {name: 'add', id: '2', data: {name: 't2', id: '2'}},
     {name: 'remove', id: '3', data: {name: 't2', id: '2'}}
   ]
-  t.deepEqual(actual3, expected3)
+  t.deepEqual(actual3, expected3, 'should have correct number of actions in the actions list')
    t.end()
 })
 
 
-test('Whent he undo method is invoked, need to remove the data or add the data back depending on the action type', (t) => {
+test('The `undo` method', (t) => {
 
   const app = App({tasks: Tasks(), actions: Actions()});
   app.do('add', Task({name: 't1'}))
@@ -72,7 +69,7 @@ test('Whent he undo method is invoked, need to remove the data or add the data b
   app.do('remove', Task({name: 't2', id: '2'}))
   const actual1 = [{name: 't1', id: '1'}]
   const expected1 = app.tasks.getAll()
-  t.deepEqual(actual1, expected1)
+  t.deepEqual(actual1, expected1, 'should add the item back if the last action was remove')
   // then undo the action, and the stuf should come back
   app.undo() // undo the remove step, so we should get the item back
   const actual2 = [
@@ -80,11 +77,11 @@ test('Whent he undo method is invoked, need to remove the data or add the data b
     {name: 't2', id: '2'}
   ]
   const expected2 = app.tasks.getAll()
-  t.deepEqual(actual2, expected2)
+  t.deepEqual(actual2, expected2, 'should add the item back if the last action was remove')
   t.end()
 })
 
-test('If the last action is add, then we need to remove the task', (t) => {
+test('The `undo` method', (t) => {
 
   const app = App({tasks: Tasks(), actions: Actions()});
   app.do('add', Task({name: 't1'}))
@@ -94,11 +91,11 @@ test('If the last action is add, then we need to remove the task', (t) => {
     {name: 't1', id: '1'}
   ]
   const expected = app.tasks.getAll()
-  t.deepEqual(actual, expected)
+  t.deepEqual(actual, expected, 'should remove the item if the last action was add')
   t.end()
 })
 
-test('After all the actions are undone, and the stack is empty', (t) => {
+test('After undoing all the actions', (t) => {
   const app = App({tasks: Tasks(), actions: Actions()});
   app.do('add', Task({name: 't1'}))
   app.do('add', Task({name: 't2'}))
@@ -106,11 +103,11 @@ test('After all the actions are undone, and the stack is empty', (t) => {
   app.undo()
   const actual = []
   const expected = app.tasks.getAll()
-  t.deepEqual(actual, expected)
+  t.deepEqual(actual, expected, 'the actions list should be empty')
   t.end()
 })
 
-test('Prevent users from getting error after undoing all the actions', (t) => {
+test('If the user keeps on undoing', (t) => {
   const app = App({tasks: Tasks(), actions: Actions()});
   app.do('add', Task({name: 't1'}))
   app.do('add', Task({name: 't2'}))
@@ -118,11 +115,11 @@ test('Prevent users from getting error after undoing all the actions', (t) => {
   app.undo()
   const actual = app.undo().name
   const expected = 'empty'
-  t.equal(actual, expected)
+  t.equal(actual, expected, 'app should not throw error')
   t.end()
 })
 
-test('Redo is equivalent to undoing an undo', (t) => {
+test('The `redo` method', (t) => {
   const app = App({tasks: Tasks(), actions: Actions()});
   app.do('add', Task({name: 't1'}))
   app.do('add', Task({name: 't2'}))
@@ -133,11 +130,11 @@ test('Redo is equivalent to undoing an undo', (t) => {
     {name: 't1', id: '1'},
     {name: 't2', id: '2'}
   ]
-  t.deepEqual(actual, expected)
+  t.deepEqual(actual, expected, 'should repeat the task was a undo')
   t.end()
 })
 
-test('Redo is equivalent to undoing an undo. Testing when the last ation was a remove', (t) => {
+test('If the last action was a remove', (t) => {
   const app = App({tasks: Tasks(), actions: Actions()});
   app.do('add', Task({name: 't1'}))
   app.do('add', Task({name: 't2'}))
@@ -150,6 +147,6 @@ test('Redo is equivalent to undoing an undo. Testing when the last ation was a r
     {name: 't1', id: '1'},
     {name: 't2', id: '2'}
   ]
-  t.deepEqual(actual, expected)
+  t.deepEqual(actual, expected, 'undo and then redoing should add the last item and then remove the last item')
   t.end()
 })

@@ -4,14 +4,16 @@
   "description": "",
   "main": "command.js",
   "scripts": {
-    "test": "./bin/tape test/**/*.js --harmony | ./bin/faucet",
-    "tc": "./bin/tape test/**/*.js --harmony",
-    "tdd": " nodemon -x \"npm t\""
+    "test": "./bin/tape test/**/*.test.js ---harmony | ./bin/tap-spec",
+    "tdd": "nodemon -x \"./bin/tape test/**/*.test.js --harmony | ./bin/tap-simple\"",
+    "spec:watch": "nodemon -x \"./bin/tape test/suite.test.js | ./bin/tap-spec\""
   },
   "author": "Amin Meyghani <meyghania@gmail.com> (http://meyghani.com)",
   "license": "ISC",
   "devDependencies": {
-    "faucet": "0.0.1",
-    "tape": "^4.4.0"
+    "tap-simple": "^0.3.1",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.4.0",
+    "tape-watch": "^1.3.0"
   }
 }
