@@ -1,4 +1,10 @@
 const Action = require('./todo').Action
+/**
+ * Manages the operations that you can take
+ * in the application
+ * @param {Object} config configuration object containing
+ * a Tasks manager and an Actions manager
+ */
 function App(config) {
   if (!(this instanceof App)) return new App(config)
   this.tasks = config.tasks
@@ -12,6 +18,11 @@ App.prototype = (function () {
   }
   return {
     constructor: App,
+    /**
+     * The common interface for methods to be called
+     * @param  {String} methodname The method to be invoked by App
+     * @return {Object}            The Action object that was performed
+     */
     do(methodname) {
       const args = Array.from(arguments).slice(1)
       const data = args[0]
@@ -25,6 +36,10 @@ App.prototype = (function () {
       }
       return action
     },
+    /**
+     * The undo handler
+     * @return {Object} the Action object after the operation
+     */
     undo () {
       if (this.actions.getCount()) {
         const lastAction = this.actions.pop()
@@ -41,6 +56,10 @@ App.prototype = (function () {
         return Action({name: 'empty'})
       }
     },
+    /**
+     * The redo handler
+     * @return {Action} the action that was performed
+     */
     redo() {
       if (this.actions.undoActions.length) {
         const lastUndo = this.actions.undoActions.pop()
@@ -52,4 +71,7 @@ App.prototype = (function () {
   }
 }())
 
+/**
+ * Export
+ */
 module.exports = App;

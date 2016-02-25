@@ -1,6 +1,6 @@
 /**
  * Item constructor
- * @param {[type]} opts [description]
+ * @param {Object} opts Item configuration
  */
 function Item (opts) {
   if (!(this instanceof Item)) return new Item(opts)
@@ -9,7 +9,7 @@ function Item (opts) {
 
 /**
  * Action Constructor
- * @param {[type]} opts [description]
+ * @param {Object} opts Action configuration
  */
 function Action (opts) {
   if (!(this instanceof Action)) return new Action(opts)
@@ -39,7 +39,7 @@ Items.prototype = {
   },
   /**
   * Adds an item to the list given an item object.
-  * @param {Object} the item object to add.
+  * @param {Object} item The item object to add.
   */
   add(item) {
     const id = (this.idRef += 1) + '';
@@ -52,10 +52,10 @@ Items.prototype = {
   },
   /**
   * Remove an item for the list given the item.
-  * @param {Object} the item to remove
+  * @param {Object} item to be removed
   */
   remove(item) {
-    if (!(item.id)) { throw new Error('Item must have id!'); return {} }
+    if (!(item instanceof Item)) { throw new Error('Object should be an Item instance'); return {} }
     else {
       this.items = this.items.filter(i => i.id !== item.id)
       return item
@@ -80,21 +80,24 @@ Items.prototype = {
     }
   },
   /**
-  * Return all the elements in the list.
-  */
+   * Return all the elements in the list
+   * @return {Array} list containing all the Items
+   */
   getAll() {return this.items},
   /**
-  * Return the totall count of items.
-  */
+   * Get the total number of items in the list
+   * @return {Number} total number of Items in the list
+   */
   getCount() {return this.items.length},
   /**
-  * Get the current id value.
-  */
+   * Get the current id value
+   * @return {Number} the current id value
+   */
   getRefId() {return this.idRef},
 };
 
 /**
- * Actions Constructor
+ * Manages the actions list
  */
 function Actions() {
   if (!(this instanceof Actions)) return new Actions
@@ -105,6 +108,10 @@ Actions.prototype = Object.create(Items.prototype)
 
 Actions.prototype.undoActions = []
 
+/**
+ * Adds an action to the list of actions given an Action
+ * @param {Object} item the action to be added to the list of Actions
+ */
 Actions.prototype.add = function (item) {
   const id = (this.idRef += 1) + '';
   const toAdd = Action(Object.assign({
@@ -114,6 +121,10 @@ Actions.prototype.add = function (item) {
   this.items.push(toAdd)
   return toAdd
 }
+/**
+ * Removes the last Action from the action list
+ * @return {Object} the last Action object from the list
+ */
 Actions.prototype.pop = function () {
   return this.items.pop()
 }
@@ -121,7 +132,8 @@ Actions.prototype.pop = function () {
 Actions.prototype.constructor = Actions
 
 /**
- * Tasks Constructor
+ * Manages tasks by keeping a reference
+ * to the Tasks list
  */
 function Tasks () {
   if (!(this instanceof Tasks)) return new Tasks
@@ -135,9 +147,5 @@ Tasks.prototype.constructor = Tasks;
  * Export
  */
 module.exports = {
-  Item: Item,
-  Action: Action,
-  Items: Items,
-  Actions: Actions,
-  Tasks: Tasks
+  Item, Action, Items, Actions, Tasks
 }

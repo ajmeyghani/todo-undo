@@ -142,7 +142,7 @@ test('Redo is equivalent to undoing an undo. Testing when the last ation was a r
   app.do('add', Task({name: 't1'}))
   app.do('add', Task({name: 't2'}))
   app.do('add', Task({name: 't3'}))
-  app.do('remove', {id: '3'})
+  app.do('remove', Task({name: 't3', id: '3'}))
   app.undo()
   app.redo()
   const actual = app.tasks.getAll()

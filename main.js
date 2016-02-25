@@ -9,7 +9,14 @@ const app = require('./src/app')({
 
 app.do('add', Item({name: 'clean'}))
 app.do('add', Item({name: 'clean2'}))
+// app.do('remove', '2')
+// app.undo()
 
 
-console.log(app.tasks.getAll())
-console.log(app.actions.getAll())
+// console.log(app.tasks.getAll())
+
+// app.do('remove', {id: 1})
+// console.log(app.actions.getAll())
+
+
+// console.log(app.tasks.getAll())
