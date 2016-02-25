@@ -1,0 +1,17 @@
+{
+  "name": "command",
+  "version": "1.0.0",
+  "description": "",
+  "main": "command.js",
+  "scripts": {
+    "test": "./bin/tape test/**/*.js --harmony | ./bin/faucet",
+    "tc": "./bin/tape test/**/*.js --harmony",
+    "tdd": " nodemon -x \"npm t\""
+  },
+  "author": "Amin Meyghani <meyghania@gmail.com> (http://meyghani.com)",
+  "license": "ISC",
+  "devDependencies": {
+    "faucet": "0.0.1",
+    "tape": "^4.4.0"
+  }
+}
